@@ -23,7 +23,7 @@ t_COMMA = r'\,'
 # Define a rule for reserved words
 def t_ID(t):
     r'[a-zA-Z]+_[a-zA-Z]+'
-    t.type = reserved.get(t.value, 'ID')  # Check for reserved words
+    t.type = reserved_words.get(t.value, 'ID')  # Check for reserved words
     return t
 
 # Regular expression for list of numbers
@@ -54,11 +54,10 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    print('Illegal character %s', t.value[0])
+    print('Illegal input %s', t.value[0])
     t.lexer.skip(1)
     return t
 
-# Build the lexer
 lexer = lex.lex()
 
 
