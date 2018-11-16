@@ -1,2 +1,4 @@
 ffmpy
 send2trash
+pypdf2
+PyMuPDF
