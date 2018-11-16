@@ -1,6 +1,4 @@
-import os
 import ntpath
-import pprint
 import utilities as utl
 import mutagen.id3 as mid3
 from mutagen.easyid3 import EasyID3
@@ -27,6 +25,9 @@ class Audio:
             self.audiofiles.extend(dir_files)
 
     def set_artwork(self, img_path):
+        assert ntpath.isfile(img_path), 'pathname "%s" does not belong to a file' % img_path
+        extension = img_path.rsplit(".", 1)[-1]
+        assert extension == "jpg" or extension == "png", "image must be jpg or png"
         self.artwork = img_path
 
     def get_files(self):
@@ -40,11 +41,17 @@ class Audio:
             result = []
             for audio in self.audiofiles:
                 file = EasyID3(audio)
-                audio_tag = file.get(tag)[0]
+                audio_tag = file.get(tag)
                 if audio_tag:
-                    result.append(audio_tag)
+                    result.append(audio_tag[0])
             self.tags[tag] = result
-        return self.tags[tag] if self.tags[tag] else None
+
+            if self.tags[tag] and len(self.tags[tag]) == 1:
+                return self.tags[tag][0]  # single file tag
+            elif self.tags[tag]:
+                return self.tags[tag]  # list of tags
+            else:
+                return None  # no tag was found
 
     def set_tag(self, tag, data):
         assert tag in EasyID3.valid_keys, '"%s" tag is not supported' % tag
@@ -87,5 +94,6 @@ class Audio:
         for file in self.audiofiles:
             tmp = EasyID3(file)
             for tag in self.tags:
-                tmp[tag] = self.tags[tag]
+                if not isinstance(self.tags[tag], list):
+                    tmp[tag] = self.tags[tag]
                 tmp.save()
