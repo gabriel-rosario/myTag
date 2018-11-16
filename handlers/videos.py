@@ -10,7 +10,7 @@ class Video:
     __tags = ['title', 'artist', 'album', 'track', 'genre', 'date', 'description', 'comment', 'grouping']
 
     def __init__(self, pathname):
-        assert ntpath.isfile(pathname), "given pathname doest not belong to a file"
+        assert ntpath.isfile(pathname), 'pathname "%s" does not belong to a file' % pathname
         self.pathname = pathname
         self.filename, self.extension = ntpath.basename(pathname).rsplit('.', 1)
         self.directory = ntpath.dirname(pathname)
@@ -19,15 +19,8 @@ class Video:
         self.chapters = {}  # Key=ch start time, Value={title: title for ch, end: end time}
         self.artwork = None
 
-    # def load(self, pathname):
-    #     assert ntpath.isfile(pathname), "given pathname doest not belong to a file"
-    #     self.pathname = pathname
-    #     self.filename, self.extension = ntpath.basename(pathname).rsplit('.', 1)
-    #     self.directory = ntpath.dirname(pathname)
-    #     self.metadata = {}
-
     def get_tag(self, tag):
-        assert tag in self.__tags, "tag is not supported"
+        assert tag in self.__tags, '"%s" tag is not supported' % tag
         ff = FFprobe(
             inputs={self.pathname: ['-v', 'error', '-show_entries', 'format_tags={}'.format(tag), '-of',
                                     'default=noprint_wrappers=1:nokey=1']}
@@ -37,13 +30,17 @@ class Video:
             return tag if tag else None
 
     def set_tag(self, tag, data):
-        assert tag in self.__tags, "tag is not supported"
+        assert tag in self.__tags, '"%s" tag is not supported' % tag
         self.metadata[tag] = data
 
     def add_subs(self, sub_path, lang):
+        assert ntpath.isfile(sub_path), 'pathname "%s" does not belong to a file' % sub_path
+        assert sub_path.rsplit(".", 1)[-1] == "srt", "subtitles must srt"
         self.subtitles[lang] = sub_path
 
     def set_artwork(self, img_path):
+        assert ntpath.isfile(img_path), 'pathname "%s" does not belong to a file' % img_path
+        assert img_path.rsplit(".", 1)[-1] == ("jpg" or "png"), "image must be jpg or png"
         self.artwork = img_path
 
     def add_chapter(self, start, end, title=None):
