@@ -1,6 +1,8 @@
 import ply.lex as lex
 import ply.yacc as yacc
 import video
+import audio
+import documents
 
 tokens = [
             'TYPE',
@@ -111,7 +113,7 @@ def p_var_assign(p):
                 print(e)
         elif(type == 'doc'):
             try:
-                obj = document.Document(str(value))
+                obj = documents.PDF(str(value))
             except AssertionError as e:
                 print(e)
         var[p[2]] = [type, obj]
@@ -152,8 +154,10 @@ def p_get_function(p):
             elif(type == 'img'):
                 print("test")
             elif(type == 'doc'):
-                #fill
-                print('test')
+                try:
+                    print(obj.get_tag(tag))
+                except AssertionError as e:
+                    print(e)
             else:
                 print(p[2] + ' is not a valid ID for GET')
     else:
@@ -193,9 +197,16 @@ def p_set_func(p):
         elif(type == 'img'):
             #obj.set
             print('test')
-        elif(type == 'doc'):
-            #obj.set
-            print('test')
+        elif(type == 'doc'): #TODO: toc
+            if(tag == 'watermark'):
+                obj.set_watermark(value)
+            if(tag == 'toc'):
+                obj.set_toc(value)
+            else:
+                try:
+                    obj.set_tag(tag, value)
+                except AssertionError as e:
+                    print(e)
         else:
             print(p[2] + ' is not a valid ID for SET')
     else:
@@ -254,8 +265,7 @@ def p_save_func(p):
             #obj.save()
             print('test')
         elif(type == 'doc'):
-            #obj.save()
-            print('test')
+            obj.save()
     else:
         print(p[2] + ' is not a valid ID')
 
@@ -302,19 +312,3 @@ while True:
     except EOFError:
         break
     parser.parse(s)
-
-
-
-
-'''
-while True:
-    lex_in = input(">>> ")
-    if lex_in == "exit":
-        break
-    lexer.input(lex_in)
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break;
-        print(tok)
-'''
