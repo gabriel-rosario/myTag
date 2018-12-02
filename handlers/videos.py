@@ -102,8 +102,11 @@ class Video:
         param = []  # ffmpeg output parameters
 
         #Video Clear
+        param.append('-map_metadata')
         if self.clr:
-            param.extend(['-map_metadata', '-1'])
+            param.append('-1')
+        else:
+            param.append('-0')
 
         # tags parameters
         for tag in self.__sets:
@@ -115,7 +118,7 @@ class Video:
             # adding the picture to the inputs
             inputs[self.artwork] = None
             # parameters for artwork as require by ffmpeg
-            param.extend(['-map', '1', '-map', '0', '-disposition:0', 'attached_pic'])
+            param.extend(['-map', '1', '-disposition:0', 'attached_pic'])
 
         # writing chapter file
         if self.__chap:
@@ -138,7 +141,7 @@ class Video:
             inputs[ch_file] = None
 
         # copy the original streams to the output file
-        param.extend(['-c', 'copy'])
+        param.extend(['-map', '0', '-c', 'copy'])
 
         # subtitles parameters
         if self.__subs:
