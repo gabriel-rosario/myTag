@@ -14,7 +14,8 @@ tokens = [
             'GET',
             'SET',
             'ADD',
-            'SAVE'
+            'SAVE',
+            'CLEAR'
 ]
 
 t_EQUALS = r'\='
@@ -43,6 +44,11 @@ def t_ADD(t):
 def t_SAVE(t):
     r'save | SAVE'
     t.type = 'SAVE'
+    return t
+
+def t_CLEAR(t):
+    r'clear | CLEAR'
+    t.type = 'CLEAR'
     return t
 
 #TODO: no se puede tener un ID con las palabras TYPE. (ex: audio, vidabuena)
@@ -127,6 +133,7 @@ def p_function(p):
              | add_function
              | show_function
              | save_function
+             | clear_function
     '''
 
 def p_get_function(p):
@@ -266,6 +273,20 @@ def p_save_func(p):
             print('test')
         elif(type == 'doc'):
             obj.save()
+    else:
+        print(p[2] + ' is not a valid ID')
+
+def p_clear_func(p):
+    '''
+    clear_function : CLEAR ID
+    '''
+    if p[2] in var:
+        type = var[p[2]][0]
+        obj = var[p[2]][1]
+        if(type == 'vid'):
+            obj.clear()
+        elif(type == 'aud'):
+            obj.clear()
     else:
         print(p[2] + ' is not a valid ID')
 
