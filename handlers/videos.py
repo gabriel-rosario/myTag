@@ -170,7 +170,6 @@ class Video:
                 inputs=file_input,
                 outputs={output: param}
             )
-            print(ff.cmd)
             ff.run()  # execute ffmpeg command
             send2trash(file)  # send to trash the original file
             os.rename(output, file)
