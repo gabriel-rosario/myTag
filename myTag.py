@@ -1,8 +1,10 @@
 import ply.lex as lex
 import ply.yacc as yacc
-import video
-import audio
-import documents
+from handlers.images import Image
+from handlers.videos import Video
+from handlers.audio import Audio
+from handlers.documents import PDF
+
 
 tokens = [
             'TYPE',
@@ -104,22 +106,22 @@ def p_var_assign(p):
         type = p[1]
         if(type == 'vid'):
             try:
-                obj = video.Video(str(value))
+                obj = Video(str(value))
             except AssertionError as e:
                 print(e)
         elif(type == 'aud'):
             try:
-                obj = audio.Audio(str(value))
+                obj = Audio(str(value))
             except AssertionError as e:
                 print(e)
         elif(type == 'img'):
             try:
-                obj = image.Image(str(value))
+                obj = Image(str(value))
             except AssertionError as e:
                 print(e)
         elif(type == 'doc'):
             try:
-                obj = documents.PDF(str(value))
+                obj = PDF(str(value))
             except AssertionError as e:
                 print(e)
         var[p[2]] = [type, obj]

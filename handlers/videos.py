@@ -67,7 +67,7 @@ class Video:
         assert sub_path.rsplit(".", 1)[-1] == "srt", "subtitle must be srt"
         self.__subs[lang] = sub_path
 
-    def add_artwork(self, img_path):
+    def set_artwork(self, img_path):
         assert ntpath.isfile(img_path), 'pathname "%s" does not belong to a file' % img_path
         assert img_path.rsplit(".", 1)[-1] == ("jpg" or "png"), "image must be jpg or png"
         self.artwork = img_path
@@ -88,6 +88,7 @@ class Video:
 
     def clear(self):
         self.clr = True
+        self.artwork = None
         for tag in self.__tags:
             self.__sets[tag] = None
             self.__gets[tag] = None

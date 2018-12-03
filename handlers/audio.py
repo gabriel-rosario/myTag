@@ -1,6 +1,4 @@
-import os
 import ntpath
-import pprint
 import utilities as utl
 import mutagen.id3 as mid3
 from mutagen.easyid3 import EasyID3
@@ -64,6 +62,7 @@ class Audio:
 
     def clear(self):
         self.clr = True
+        self.artwork = None
         for tag in self.__tags:
             self.__sets[tag] = None
             self.__gets[tag] = None
