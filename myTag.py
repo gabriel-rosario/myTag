@@ -229,7 +229,8 @@ def p_add_function(p):
         obj = var[p[2]][1]
         tag = p[3].replace('<', '').replace('>', '')
         value = p[5].replace('"', '')
-        lang = p[6]
+        if(len(p) == 7):
+            lang = p[6]
         if(type == 'vid'):
             if(tag == 'sub'):
                 try:
