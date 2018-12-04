@@ -1,10 +1,8 @@
 import ply.lex as lex
 import ply.yacc as yacc
-from handlers.images import Image
 from handlers.videos import Video
 from handlers.audio import Audio
 from handlers.documents import PDF
-
 
 tokens = [
             'TYPE',
@@ -75,8 +73,8 @@ def t_STRING(t):
     return t
 
 def t_error(t):
-    print("Lexer: Illegal character!")
-    t.lexer.skip(1)
+    print("Illegal character!")
+    t.lexer.skip(len(s))
 
 lexer = lex.lex()
 
@@ -224,16 +222,18 @@ def p_set_func(p):
 def p_add_function(p):
     '''
     add_function : ADD ID TAG EQUALS set_value
+                 | ADD ID TAG EQUALS set_value set_value
     '''
     if p[2] in var:
         type = var[p[2]][0]
         obj = var[p[2]][1]
         tag = p[3].replace('<', '').replace('>', '')
         value = p[5].replace('"', '')
+        lang = p[6]
         if(type == 'vid'):
             if(tag == 'sub'):
                 try:
-                    obj.add_subs(value)
+                    obj.add_subs(value, lang)
                 except AssertionError as e:
                     print(e)
             elif(tag == 'chapter'):
@@ -258,6 +258,8 @@ def p_show_function(p):
     '''
     if p[1] in var:
         print('Type: ' + str(var[p[1]][0]) + '\nValue: ' + var[p[1]][1])
+    else:
+        print("NameError: name \'" + p[1] + "\' is not defined")
 
 def p_save_func(p):
     '''
