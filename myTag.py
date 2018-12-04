@@ -232,8 +232,7 @@ def p_add_function(p):
         if(type == 'vid'):
             if(tag == 'sub'):
                 try:
-                    if(len(p) == 7):
-                        lang = p[6]
+                    lang = p[6]
                     obj.add_subs(value, lang)
                 except AssertionError as e:
                     print(e)
