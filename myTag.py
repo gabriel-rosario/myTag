@@ -222,7 +222,6 @@ def p_set_func(p):
 def p_add_function(p):
     '''
     add_function : ADD ID TAG EQUALS set_value
-                 | ADD ID TAG EQUALS set_value set_value
     '''
     if p[2] in var:
         type = var[p[2]][0]
