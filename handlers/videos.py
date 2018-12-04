@@ -62,9 +62,14 @@ class Video:
         self.__sets[tag] = data
         self.__gets[tag] = data
 
-    def add_subs(self, sub_path, lang):
+    def add_subs(self, sub_path):
         assert ntpath.isfile(sub_path), 'pathname "%s" does not belong to a file' % sub_path
         assert sub_path.rsplit(".", 1)[-1] == "srt", "subtitle must be srt"
+        lang = ntpath.basename(sub_path).rsplit(".", 2)
+        if len(lang) == 3:
+            lang = lang[1]
+        else:
+            lang = ""
         self.__subs[lang] = sub_path
 
     def set_artwork(self, img_path):
@@ -144,6 +149,7 @@ class Video:
         # copy the original streams to the output file
         param.extend(['-map', '0', '-c', 'copy'])
 
+
         # subtitles parameters
         if self.__subs:
             in_num = len(inputs) + 1
@@ -170,6 +176,7 @@ class Video:
                 inputs=file_input,
                 outputs={output: param}
             )
+            print(ff.cmd)
             ff.run()  # execute ffmpeg command
             send2trash(file)  # send to trash the original file
             os.rename(output, file)
