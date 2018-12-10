@@ -5,12 +5,13 @@ from mutagen.easyid3 import EasyID3
 
 
 class Audio:
-
+    __tags = ['title', 'artist', 'album', 'albumartist', 'composer', 'genre', 'date', 'tracknumber', 'discnumber', 'bpm']
+    __sets = {}
+    __gets = {}
     def __init__(self, pathname):
         assert (ntpath.isdir(pathname) or ntpath.isfile(pathname)), "no file or directory %s exists" % pathname
         self.pathname = pathname
         self.audiofiles = []
-        self.tags = {}
         self.artwork = None
         self.clr = False
 
@@ -34,31 +35,37 @@ class Audio:
         return [audio.filename for audio in self.audiofiles]
 
     def get_tag(self, tag):
-        assert tag in EasyID3.valid_keys, '"%s" tag is not supported' % tag
-        if tag in self.tags:
-            return self.tags[tag]
-        else:
+        assert tag in self.__tags, '"%s" tag is not supported' % tag
+        if tag not in self.__gets:
             result = []
             for audio in self.audiofiles:
                 file = EasyID3(audio)
                 audio_tag = file.get(tag)
                 if audio_tag:
                     result.append(audio_tag[0])
-            self.tags[tag] = result
+                else:
+                    result.append(None)
 
-            if self.tags[tag] and len(self.tags[tag]) == 1:
-                return self.tags[tag][0]  # single file tag
-            elif self.tags[tag]:
-                return self.tags[tag]  # list of tags
+            if result and len(result) == 1:
+                self.__gets[tag] = result[0]  # single file tag
+            elif result:
+                self.__gets[tag] = result  # list of tags
             else:
-                return None  # no tag was found
+                self.__gets[tag] = None  # no tag was found
+
+        return self.__gets[tag]
 
     def set_tag(self, tag, data):
-        assert tag in EasyID3.valid_keys, '"%s" tag is not supported' % tag
-        self.tags[tag] = data
+        assert tag in self.__tags, '"%s" tag is not supported' % tag
+        self.__sets[tag] = data
+        self.__gets[tag] = data
 
     def clear(self):
         self.clr = True
+        self.artwork = None
+        for tag in self.__tags:
+            self.__sets[tag] = None
+            self.__gets[tag] = None
 
     def save(self):
         if self.clr:
@@ -70,7 +77,6 @@ class Audio:
                 tmp.add(mid3.TALB(text=""))  # album frame
                 tmp.add(mid3.TPE2(text=""))  # album artist frame
                 tmp.add(mid3.TCOM(text=""))  # composer frame
-                tmp.add(mid3.GRP1(text=""))  # grouping frame
                 tmp.add(mid3.TCON(text=""))  # genre frame
                 tmp.add(mid3.TDRC(text=""))  # date frame
                 tmp.add(mid3.TRCK(text=""))  # tracknumber frame
@@ -93,7 +99,7 @@ class Audio:
 
         for file in self.audiofiles:
             tmp = EasyID3(file)
-            for tag in self.tags:
-                if not isinstance(self.tags[tag], list):
-                    tmp[tag] = self.tags[tag]
-                tmp.save()
+            for tag in self.__sets:
+                if self.__sets[tag]:
+                    tmp[tag] = self.__sets[tag]
+                    tmp.save()

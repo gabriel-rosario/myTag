@@ -1,8 +1,8 @@
 import ply.lex as lex
 import ply.yacc as yacc
-import video
-import audio
-import documents
+from handlers.videos import Video
+from handlers.audio import Audio
+from handlers.documents import PDF
 
 tokens = [
             'TYPE',
@@ -14,7 +14,8 @@ tokens = [
             'GET',
             'SET',
             'ADD',
-            'SAVE'
+            'SAVE',
+            'CLEAR'
 ]
 
 t_EQUALS = r'\='
@@ -45,6 +46,11 @@ def t_SAVE(t):
     t.type = 'SAVE'
     return t
 
+def t_CLEAR(t):
+    r'clear | CLEAR'
+    t.type = 'CLEAR'
+    return t
+
 #TODO: no se puede tener un ID con las palabras TYPE. (ex: audio, vidabuena)
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -67,8 +73,8 @@ def t_STRING(t):
     return t
 
 def t_error(t):
-    print("Lexer: Illegal character!")
-    t.lexer.skip(1)
+    print("Illegal character!")
+    t.lexer.skip(len(s))
 
 lexer = lex.lex()
 
@@ -98,22 +104,22 @@ def p_var_assign(p):
         type = p[1]
         if(type == 'vid'):
             try:
-                obj = video.Video(str(value))
+                obj = Video(str(value))
             except AssertionError as e:
                 print(e)
         elif(type == 'aud'):
             try:
-                obj = audio.Audio(str(value))
+                obj = Audio(str(value))
             except AssertionError as e:
                 print(e)
         elif(type == 'img'):
             try:
-                obj = image.Image(str(value))
+                obj = Image(str(value))
             except AssertionError as e:
                 print(e)
         elif(type == 'doc'):
             try:
-                obj = documents.PDF(str(value))
+                obj = PDF(str(value))
             except AssertionError as e:
                 print(e)
         var[p[2]] = [type, obj]
@@ -127,6 +133,7 @@ def p_function(p):
              | add_function
              | show_function
              | save_function
+             | clear_function
     '''
 
 def p_get_function(p):
@@ -249,6 +256,8 @@ def p_show_function(p):
     '''
     if p[1] in var:
         print('Type: ' + str(var[p[1]][0]) + '\nValue: ' + var[p[1]][1])
+    else:
+        print("NameError: name \'" + p[1] + "\' is not defined")
 
 def p_save_func(p):
     '''
@@ -266,6 +275,20 @@ def p_save_func(p):
             print('test')
         elif(type == 'doc'):
             obj.save()
+    else:
+        print(p[2] + ' is not a valid ID')
+
+def p_clear_func(p):
+    '''
+    clear_function : CLEAR ID
+    '''
+    if p[2] in var:
+        type = var[p[2]][0]
+        obj = var[p[2]][1]
+        if(type == 'vid'):
+            obj.clear()
+        elif(type == 'aud'):
+            obj.clear()
     else:
         print(p[2] + ' is not a valid ID')
 
