@@ -201,6 +201,8 @@ save myvid                                            //save changes
 
 Here is a visual example of the code running.
 
+You you can click [this link to see it on youtube](https://www.youtube.com/watch?v=kcqrEt1Ks7A) or go to [https://www.youtube.com/watch?v=kcqrEt1Ks7A](https://www.youtube.com/watch?v=kcqrEt1Ks7A).
+
 
 
 **Final Report**
