@@ -13,7 +13,11 @@ First of all, clone this repository to your computer.
 
 Now, to begin the setup to use this language, it is assumed that you already have Python 3 installed.  The external libraries need to be installed using PIP (if you have Python 3 installed, then this is also installed)
 
-Then, from the terminal, navigate to the cloned repository and run the following commands:
+You also need to install the PLY parsing tool.
+
+After this is installed, you need to install the external libraries located in the requirements.txt file by running ```pip install –r requirements.txt```
+
+Alternatively, you can install them seperately from the terminal.  Navigate to the cloned repository and run the following commands:
 1. ```pip install pypdf2```
 2. ```pip install pymupdf```
 3. ```pip install ffmpy```
@@ -66,8 +70,10 @@ Example:
 
 ```vid myvid = /Users/usr/Demo/GameOfThrones```
 
-Now, this will change depending on the format of the file so for MP4 is ```vid myvar = /PATH/```, for MP3 is ```aud myvar = /PATH/```, and for 
-PDF is ```doc myvar = /PATH/```
+Now, this will change depending on the format of the file so for MP4 is ```vid myvar = /PATH/```, for MP3 is ```aud myvar = /PATH/```, and for PDF is ```doc myvar = /PATH/```
+
+After you make all the changes you wished to do, save them by running ```save myvar```.
+
 1. MP4 Files
 
     **Commands**
@@ -91,6 +97,20 @@ PDF is ```doc myvar = /PATH/```
     
     ```set myvar<cover> = /PATH/```
 
+    d. ADD
+    ```add myvar<TAG> = VALUE```
+
+    This is used to add either ```chapter``` or ```sub``` to add either chapters or subtitles to the video.
+
+    Example: ```add myvar<chapter> = "10"```  adds 10 chapters to the video
+
+    ```add myvar<sub> = "PATH/To/SUBS"```     adds subtitles located in the file specified
+
+    e. CLEAR
+    ```clear myvar```
+
+    This clears the file's metadata
+
 2. MP3 Files
 
     **Commands**
@@ -108,11 +128,16 @@ PDF is ```doc myvar = /PATH/```
     
     where TAG is the metadata tag, shown previously, you with to view the value of.
     
-     c. COVER
+    c. COVER
     
     To set the cover image, it uses the SET function but with the ```cover``` as the TAG, and a PATH name to the image, instead of string.
     
     ```set myvar<cover> = /PATH/```
+
+    d. CLEAR
+    ```clear myvar```
+
+    This clears the file's metadata
 
 3. PDF Files
 
@@ -152,6 +177,11 @@ PDF is ```doc myvar = /PATH/```
     set myvar<toc> = "1 chapter2 7"
     save myvar
     ```
+
+    e. CLEAR
+    ```clear myvar```
+
+    This clears the file's metadata
     
 **Example**
 ---
@@ -165,6 +195,17 @@ set myvid<date> = “2017”                              //add date metadata
 set myvid<cover> = /Users/usr/Demo/cover.jpg          //add cover image to video
 save myvid                                            //save changes
 ```
+
+**Video Example**
+---
+
+Here is a visual example of the code running.
+
+
+
+**Final Report**
+---
+The final report can be seen by viewing the github page and opening the file called FinalReport.pdf or by clicking [here](https://github.com/gabriel-rosario/myTag/blob/master/FinalReport.pdf).
 
 
 **Credit**
